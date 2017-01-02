@@ -1,0 +1,6 @@
+[package]
+name = "readwritewav"
+version = "0.1.0"
+authors = ["Brendan Clohesy <brendan_460@hotmail.com>"]
+
+[dependencies]
