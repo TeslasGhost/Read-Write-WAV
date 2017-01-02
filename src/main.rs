@@ -31,11 +31,10 @@ fn main() {
 #[allow(dead_code)]
 fn read_and_write() {
     let specification = hound::WavSpec {
-    channels: 1,
-    sample_rate: 22050,
-    bits_per_sample: 16,
-    sample_format: hound::SampleFormat::Int,
-    };
+                                            channels: 1,
+                                            sample_rate: 22050,
+                                            bits_per_sample: 16,
+                                            sample_format: hound::SampleFormat::Int, };
 
     let mut reader = hound::WavReader::open(ORIGINAL_WAV_FILE).unwrap();
     let mut writer = hound::WavWriter::create(NEW_WAV_FILE, specification).unwrap();
@@ -49,26 +48,34 @@ fn read_and_write() {
 }
 
 
-
 // Attempt to slice the array
 #[allow(dead_code)]
-fn slice_the_wav_array() {
-    
+fn slice_the_wav_array() {    
     let slice_specification = hound::WavSpec {
-    channels: 1,
-    sample_rate: 22050,
-    bits_per_sample: 16,
-    sample_format: hound::SampleFormat::Int,
-    };
+                                                channels: 1,
+                                                sample_rate: 22050,
+                                                bits_per_sample: 16,
+                                                sample_format: hound::SampleFormat::Int, };
 
     let frames: Vec<wav::Frame> = frames(wav::NEW_FILE);
     
     // Slice up the vector to capture 2 seconds worth of data.... each tick = 1 sec = 22.050 KHz
     let testslice = &frames[220500..264600];    // from :10 > :12 seconds    (@ 22.050 kHz sample)
+    
+    // probably need to cast to a raw pointer here....
+    // take a pointer to the first element in the array and try to convert it..
+
+    // Raw pointer to the first element of the array
+    &testslice[0] as *const i16;
+
+    // let temp_pointer: *const [i16; 2] = testslice;
+
+
+
     println!("testslice: {:?}", testslice);
     
     let mut slicewriter = hound::WavWriter::create(SLICED_WAV_FILE, slice_specification).unwrap();
-
+ //   slicewriter.write_sample((testslice) as i16).unwrap();
 }
 
 
