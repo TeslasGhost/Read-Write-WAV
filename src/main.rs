@@ -4,7 +4,6 @@ extern crate sample;
 use sample::{signal, Signal, ToFrameSliceMut};
 use std::i16;
 
-
 mod wav {
     pub const NUM_CHANNELS: usize = 2;
     pub const PATH: &'static str = "imperial_march.wav";
@@ -21,11 +20,9 @@ const SLICED_WAV_FILE: &'static str = "sliced_wav.wav";
 #[allow(dead_code)]
 fn main() {
    // uncomment the below line to read wav file and write to new wav file
-  //  read_and_write();
-    slice_the_wav_array();
-  // read_and_write();
-
-
+   read_and_write();
+   slice_the_wav_array();
+   // read_and_write();
 }
 
 #[allow(dead_code)]
@@ -47,7 +44,6 @@ fn read_and_write() {
 
 }
 
-
 // Attempt to slice the array
 #[allow(dead_code)]
 fn slice_the_wav_array() {    
@@ -61,24 +57,21 @@ fn slice_the_wav_array() {
     
     // Slice up the vector to capture 2 seconds worth of data.... each tick = 1 sec = 22.050 KHz
     let testslice = &frames[220500..264600];    // from :10 > :12 seconds    (@ 22.050 kHz sample)
-    
-    // probably need to cast to a raw pointer here....
-    // take a pointer to the first element in the array and try to convert it..
 
     // Raw pointer to the first element of the array
     &testslice[0] as *const i16;
 
-    // let temp_pointer: *const [i16; 2] = testslice;
-
-
-
-    println!("testslice: {:?}", testslice);
-    
     let mut slicewriter = hound::WavWriter::create(SLICED_WAV_FILE, slice_specification).unwrap();
- //   slicewriter.write_sample((testslice) as i16).unwrap();
+
+    // 44100 being 2 seconds worth...
+    for t in testslice.iter() {
+        let slice_sample = t;
+        // write only the one channel to satisfy the write_sample() trait with reference to the spec
+        slicewriter.write_sample(slice_sample[0]).unwrap();
+    }
+
+  //  println!("testslice: {:?}", testslice);
 }
-
-
 
 // Given the file name, produces a Vec of `Frame`s which may be played back.
 #[allow(dead_code)]
@@ -90,7 +83,8 @@ fn frames(file_name: &'static str) -> Vec<wav::Frame> {
     signal::from_interleaved_samples::<_, wav::Frame>(samples)
         .from_hz_to_hz(spec.sample_rate as f64, SAMPLE_RATE as f64)
         .collect()
-
 }
+
+
 
 
